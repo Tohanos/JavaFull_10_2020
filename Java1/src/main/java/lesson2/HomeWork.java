@@ -29,7 +29,7 @@ public class HomeWork {
         int[] arrayToCheck = new int[size];
         arrayInput(arrayToCheck);
         int[] result = selectMinMaxFromArray(arrayToCheck);
-        System.out.println("Минимальное значение = "+result[0]+" Максимальное значение =" + result[1]);
+        System.out.println("Минимальное значение = " + result[0] + " Максимальное значение =" + result[1]);
 
         //6
 
@@ -45,7 +45,7 @@ public class HomeWork {
 
         //7
         int shift = sizeInput("Введите сдвиг для массива");
-        arrayRotate(arrayToCheck,shift);
+        arrayRotate(arrayToCheck, shift);
         System.out.println(Arrays.toString(arrayToCheck));
 
 
@@ -53,17 +53,13 @@ public class HomeWork {
 
     public static void invertArray(int[] arrayIn) {
         for (int i = 0; i < arrayIn.length; i++) {
-            if (arrayIn[i] == 1) {
-                arrayIn[i] = 0;
-            } else {
-                arrayIn[i] = 1;
-            }
+            arrayIn[i] = 1 - arrayIn[i];
         }
     }
 
-    public static void multipleByThreeArray(int[] arrayIn){
+    public static void multipleByThreeArray(int[] arrayIn) {
         for (int i = 0; i < arrayIn.length; i++) {
-            arrayIn[i] = i*3;
+            arrayIn[i] = i * 3;
         }
     }
 
@@ -87,10 +83,10 @@ public class HomeWork {
 
     public static int[] selectMinMaxFromArray(int[] arrayIn) {
         int elemMin = arrayIn[0], elemMax = arrayIn[0];
-        for (int elem:
-             arrayIn) {
-            if(elemMin > elem) elemMin = elem;
-            if(elemMax < elem) elemMax = elem;
+        for (int elem :
+                arrayIn) {
+            if (elemMin > elem) elemMin = elem;
+            if (elemMax < elem) elemMax = elem;
         }
         int[] returnVal = new int[2];
         returnVal[0] = elemMin;
@@ -101,41 +97,52 @@ public class HomeWork {
     public static int sizeInput(String question) {
         Scanner sc = new Scanner(System.in);
         System.out.println(question);
-        int size = sc.nextInt();
-        return size;
+        return sc.nextInt();
     }
 
     public static void arrayInput(int[] array) {
         Scanner sc = new Scanner(System.in);
         int size = array.length;
         for (int i = 0; i < size; i++) {
-            System.out.println("Введите "+ (i+1) +"-й элемент массива");
+            System.out.println("Введите " + (i + 1) + "-й элемент массива");
             array[i] = sc.nextInt();
         }
     }
 
     public static boolean leftAndRightSumsEquals(int[] arrayToCheck) {
+        boolean result = false;
         int size = arrayToCheck.length;
-        for (int i = 0; i < size-1; i++) {
-            int sumLeft = 0, sumRight = 0;
-            for (int j = 0; j <= i; j++) sumLeft +=arrayToCheck[j];
-            for (int j = i+1; j < size; j++) sumRight += arrayToCheck[j];
-            if (sumLeft == sumRight) return true;
+        int sum = 0, leftSum = 0;
+
+        for (int elem : arrayToCheck) {
+            sum += elem;
         }
-        return false;
+        if (sum % 2 == 0) {
+            for (int elem : arrayToCheck) {
+                leftSum += elem;
+                if (leftSum == sum / 2) {
+                    result = true;
+                    break;
+                }
+                if (leftSum > sum / 2) {
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
-    public static void arrayRotate(int[] inArray,int n){
+    public static void arrayRotate(int[] inArray, int n) {
         int size = inArray.length;
         int bucket;     //переменная для хранения изменяемого элемента массива
         int curCounter = 0;
 
-        while(curCounter != n){
+        while (curCounter != n) {
 
-            if(n<0) {
+            if (n < 0) {
                 //сдвиг влево
                 bucket = inArray[0];
-                for (int i = 1; i < size; i++) inArray[i-1] = inArray[i];
+                for (int i = 1; i < size; i++) inArray[i - 1] = inArray[i];
                 inArray[size - 1] = bucket;
                 curCounter--;
             } else {
