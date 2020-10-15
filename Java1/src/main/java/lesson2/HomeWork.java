@@ -121,11 +121,8 @@ public class HomeWork {
                 inArray[0] = bucket;
                 curCounter++;
             }
-
         }
-
     }
-
 }
 
 
