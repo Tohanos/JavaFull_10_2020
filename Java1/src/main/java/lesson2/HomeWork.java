@@ -104,8 +104,8 @@ public class HomeWork {
     public static void arrayRotate(int[] inArray,int n){
         int size = inArray.length;
         int bucket;     //переменная для хранения изменяемого элемента массива
-
         int curCounter = 0;
+
         while(curCounter != n){
 
             if(n<0) {
