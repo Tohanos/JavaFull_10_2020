@@ -7,32 +7,73 @@ public class HomeWork {
     public static void main(String[] args) {
         //1
         int[] nElems = {1, 1, 0, 0, 1, 0, 1, 1, 0, 0};
-        for (int i = 0; i < nElems.length; i++) {
-            if (nElems[i] == 1) {
-                nElems[i] = 0;
-            } else {
-                nElems[i] = 1;
-            }
-        }
+        invertArray(nElems);
         System.out.println(Arrays.toString(nElems));
-        //2
 
+        //2
         int[] kElems = new int[8];
-        for (int i = 0; i < 8; i++) {
-            kElems[i] = i*3;
-        }
+        multipleByThreeArray(kElems);
         System.out.println(Arrays.toString(kElems));
 
         //3
         int[] lELems = {1, 5, 3, 2, 11, 4, 5, 2, 4, 8, 9, 1};
-        for (int i = 0; i < lELems.length; i++) {
-            if (lELems[i] < 6) lELems[i] *= 2;
-        }
+        checkArrayElemLessThenSix(lELems);
         System.out.println(Arrays.toString(lELems));
 
         //4
         int size = sizeInput("Введите размер квадратной матрицы");
+        printSquareMatrix(size);
 
+        //5
+        size = sizeInput("Введите размер массива");
+        int[] arrayToCheck = new int[size];
+        arrayInput(arrayToCheck);
+        int[] result = selectMinMaxFromArray(arrayToCheck);
+        System.out.println("Минимальное значение = "+result[0]+" Максимальное значение =" + result[1]);
+
+        //6
+
+        size = sizeInput("Введите размер массива");
+        arrayToCheck = new int[size];
+        arrayInput(arrayToCheck);
+        if (leftAndRightSumsEquals(arrayToCheck)) {
+            System.out.println("Сумма левой и правой части равны");
+        } else {
+            System.out.println("Сумма левой и правой части НЕ равны");
+        }
+
+
+        //7
+        int shift = sizeInput("Введите сдвиг для массива");
+        arrayRotate(arrayToCheck,shift);
+        System.out.println(Arrays.toString(arrayToCheck));
+
+
+    }
+
+    public static void invertArray(int[] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            if (arrayIn[i] == 1) {
+                arrayIn[i] = 0;
+            } else {
+                arrayIn[i] = 1;
+            }
+        }
+    }
+
+    public static void multipleByThreeArray(int[] arrayIn){
+        for (int i = 0; i < arrayIn.length; i++) {
+            arrayIn[i] = i*3;
+        }
+    }
+
+    public static void checkArrayElemLessThenSix(int[] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            if (arrayIn[i] < 6) arrayIn[i] *= 2;
+        }
+    }
+
+    public static void printSquareMatrix(int size) {
         int[][] square = new int[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -42,36 +83,19 @@ public class HomeWork {
             }
             System.out.println();
         }
+    }
 
-        //5
-        size = sizeInput("Введите размер массива");
-        int[] arrayToCheck = new int[size];
-        arrayInput(arrayToCheck);
-        int elemMin = 0, elemMax = 0;
-        for (int i = 0; i < size; i++) {
-            if(i==0) {
-                elemMin = arrayToCheck[i];
-                elemMax = arrayToCheck[i];
-            } else {
-                if(elemMin > arrayToCheck[i]) elemMin = arrayToCheck[i];
-                if(elemMax < arrayToCheck[i]) elemMax = arrayToCheck[i];
-            }
+    public static int[] selectMinMaxFromArray(int[] arrayIn) {
+        int elemMin = arrayIn[0], elemMax = arrayIn[0];
+        for (int elem:
+             arrayIn) {
+            if(elemMin > elem) elemMin = elem;
+            if(elemMax < elem) elemMax = elem;
         }
-        System.out.println("Минимальное значение = "+elemMin+" Максимальное значение =" + elemMax);
-
-        //6
-
-        size = sizeInput("Введите размер массива");
-        arrayToCheck = new int[size];
-        arrayInput(arrayToCheck);
-        System.out.println(leftAndRightSumsEquals(arrayToCheck));
-
-        //7
-        int shift = sizeInput("Введите сдвиг для массива");
-        arrayRotate(arrayToCheck,shift);
-        System.out.println(Arrays.toString(arrayToCheck));
-
-
+        int[] returnVal = new int[2];
+        returnVal[0] = elemMin;
+        returnVal[1] = elemMax;
+        return returnVal;
     }
 
     public static int sizeInput(String question) {
@@ -92,10 +116,10 @@ public class HomeWork {
 
     public static boolean leftAndRightSumsEquals(int[] arrayToCheck) {
         int size = arrayToCheck.length;
-        int sumLeft = 0, sumRight = 0;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size-1; i++) {
+            int sumLeft = 0, sumRight = 0;
             for (int j = 0; j <= i; j++) sumLeft +=arrayToCheck[j];
-            for (int j = size-1; j > i; j--) sumRight += arrayToCheck[j];
+            for (int j = i+1; j < size; j++) sumRight += arrayToCheck[j];
             if (sumLeft == sumRight) return true;
         }
         return false;
@@ -104,8 +128,8 @@ public class HomeWork {
     public static void arrayRotate(int[] inArray,int n){
         int size = inArray.length;
         int bucket;     //переменная для хранения изменяемого элемента массива
-
         int curCounter = 0;
+
         while(curCounter != n){
 
             if(n<0) {
