@@ -137,7 +137,7 @@ public class HomeWork {
         int bucket;     //переменная для хранения изменяемого элемента массива
         int curCounter = 0;
 
-        while (curCounter != n) {
+        while (curCounter != n % size) {    //остаток от деления
 
             if (n < 0) {
                 //сдвиг влево
@@ -155,5 +155,3 @@ public class HomeWork {
         }
     }
 }
-
-
