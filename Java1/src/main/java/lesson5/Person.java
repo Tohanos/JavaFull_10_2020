@@ -68,7 +68,7 @@ public class Person {
         for (int i = 0; i < 5; i++) {
             personArr[i] = new Person(names[i], positions[i], emails[i], phones[i], salaries[i], ages[i]);
             if (personArr[i].age > 40) {
-                System.out.println(personArr[i]);
+                personArr[i].printInfo();
             }
         }
 
