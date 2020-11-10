@@ -24,6 +24,7 @@ public class Window extends JFrame {
     private static int clickCount = 0;
 
     private void initMap(JPanel panel) {
+        clickCount = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 map[i][j] = new JButton();
@@ -34,39 +35,25 @@ public class Window extends JFrame {
                     btn.setIcon(ICON_X);
                     btn.setDisabledIcon(ICON_X);
                     btn.setEnabled(false);
-                    clickCount++;
-                    if (clickCount == 9) {
-                        JFrame frame = new JFrame("Ничья");
-                        frame.setSize(300, 100);
-                        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                        frame.setLocationRelativeTo(null);
-                        JPanel p = new JPanel();
-                        JButton close = new JButton("CLOSE");
-                        close.addActionListener(e -> {
-                            dispose();
-                            frame.dispose();
-                        });
-                        JButton newGame = new JButton("NEW GAME");
-                        newGame.addActionListener(e -> {
-                            clickCount = 0;
-                            new Window();
-                            dispose();
-                            frame.dispose();
-                        });
-                        p.add(close);
-                        p.add(newGame);
-                        frame.add(p);
-                        frame.setVisible(true);
-                    }
                     if (isVictory(ICON_X)) {
-                        new VictoryDialog();
-                        clickCount = 0;
-                        new Window();
-                        dispose();
+                        disableAllButtons();
+                        showDialog("Вы победили!");
+                        return;
                     }
-                    moveAI();
+
+                    try {
+                        moveAI();
+                    } catch (IllegalArgumentException e) {
+                        disableAllButtons();
+                        showDialog("Ничья");
+                        //dispose();
+                        return;
+                    }
+
                     if (isVictory(ICON_O)) {
-                        new LoseDialog();
+                        disableAllButtons();
+                        showDialog("Вы проиграли");
+                        //dispose();
                     }
                 });
                 panel.add(btn);
@@ -86,7 +73,11 @@ public class Window extends JFrame {
                         weight = weight + 2;
                     }
                     map[i][j].setIcon(ICON_O);
-                    if (isVictory(ICON_O)) return;
+                    if (isVictory(ICON_O)) {
+                        map[i][j].setDisabledIcon(ICON_O);
+                        map[i][j].setEnabled(false);
+                        return;
+                    }
                     map[i][j].setIcon(ICON_DEFAULT);
 
                     if (weight > bestWeight || bestWeight == 0) {
@@ -101,6 +92,8 @@ public class Window extends JFrame {
             throw new IllegalArgumentException();
         }
         map[bestX][bestY].setIcon(ICON_O);
+        map[bestX][bestY].setDisabledIcon(ICON_O);
+        map[bestX][bestY].setEnabled(false);
     }
 
     private boolean isVictory(ImageIcon iconPlayer) {
@@ -137,40 +130,39 @@ public class Window extends JFrame {
         return false;
     }
 
-    public Window() throws HeadlessException {
-        setSize(300, 300);
-        // setLocation(500, 500);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        // ctrl + alt + v
-//        Toolkit toolkit = Toolkit.getDefaultToolkit();
-//        System.out.println(toolkit.getScreenSize());
-//        Dimension size = toolkit.getScreenSize();
-//        setLocation(size.width / 2 - 150, size.height / 2 - 150);
-        JMenuBar bar = new JMenuBar();
-        JMenu menu = new JMenu("1");
-        menu.add(new JMenuItem("1"));
-        menu.add(new JMenuItem("2"));
-        menu.add(new JMenuItem("3"));
-        bar.add(menu);
-        bar.add(new JMenu("2"));
-        bar.add(new JMenu("3"));
+    private void showDialog (String text) {
+        CommonWindow dialog = new CommonWindow(text);
 
+    }
+
+    private void showGameWindow () {
         JPanel panel = new JPanel(new GridLayout(3,3));
-        // panel.add(bar);
         initMap(panel);
         add(panel);
-        //setMenuBar(bar);
         setResizable(false);
         setVisible(true);
     }
+    
+    private void disableAllButtons() {
+        for (JButton[] butts:
+             map) {
+            for (JButton but:
+                 butts) {
+                but.setEnabled(false);
+            }
+        }
+    }
+
+
+    public Window() throws HeadlessException {
+        setSize(300, 300);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        showGameWindow();
+
+    }
 
     public static void main(String[] args) {
-        try {
-            new Window();
-        } catch (IllegalArgumentException e) {
-
-        }
-
+        new Window();
     }
 }
