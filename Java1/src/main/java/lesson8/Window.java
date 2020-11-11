@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 
 public class Window extends JFrame {
 
@@ -143,13 +144,17 @@ public class Window extends JFrame {
     }
     
     private void disableAllButtons() {
-        for (JButton[] butts:
-             map) {
-            for (JButton but:
-                 butts) {
-                but.setEnabled(false);
-            }
-        }
+        Arrays.asList(map).forEach(e -> Arrays.asList(e).forEach(b -> b.setEnabled(false)));
+
+
+
+//        for (JButton[] butts:
+//             map) {
+//            for (JButton but:
+//                 butts) {
+//                but.setEnabled(false);
+//            }
+//        }
     }
 
 
