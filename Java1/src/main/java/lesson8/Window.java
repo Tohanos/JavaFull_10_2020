@@ -132,7 +132,6 @@ public class Window extends JFrame {
 
     private void showDialog (String text) {
         CommonWindow dialog = new CommonWindow(text);
-
     }
 
     private void showGameWindow () {
