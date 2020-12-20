@@ -1,18 +1,11 @@
 package lesson7;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -21,39 +14,58 @@ public class ChatController implements Initializable {
     public TextArea output;
     public TextField input;
 
-    private ObjectOutputStream os;
-    private Thread sl;
+    private ServerListener serverListener;
+    private Thread thread;
 
     public void send(ActionEvent actionEvent) throws IOException {
 
-        os.writeObject(Message.of(MockAuthServiceImpl.getCurrentUser(), input.getText() + "\n"));
+        String text = input.getText();
+
+        //parse input string
+
+        String[] textArgs;
+        textArgs = text.split("\\s");
+        String[] command = new String[3];
+        command[0] = "MESSAGE";
+
+        switch (textArgs[0]) {
+            case "/quit":
+                command[0] = "QUIT";
+                break;
+            case "/enter":
+                command[0] = "ENTER";
+                command[1] = textArgs[1];
+                break;
+            case "/leave":
+                command[0] = "LEAVE";
+                break;
+            case "/chname":
+                command[0] = "CHNAME";
+                command[1] = textArgs[1];
+                break;
+        }
+
+        ChatApplication.outputStream.writeObject(Message.of("", text + "\n", command));
         input.clear();
     }
 
     public void quit(ActionEvent actionEvent) throws IOException {
-        Parent chat = FXMLLoader.load(getClass().getResource("auth.fxml"));
-        Stage stage = new Stage();
-        stage.setTitle("Регистрация");
-        stage.setScene(new Scene(chat));
-        stage.setResizable(false);
-        stage.show();
-        input.getScene().getWindow().hide();
+        quitApp();
+    }
 
-        os.close();
-        sl.interrupt();
-        Platform.exit();
+    public void quitApp () throws IOException {
+        String[] command = new String[1];
+        command[0] = "QUIT";
+        ChatApplication.outputStream.writeObject(Message.of("", "", command));
+        while (serverListener.isRunning()) {
+        }
+        ChatApplication.close();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Socket socket = null;
-        try {
-            socket = new Socket("localhost", 8189);
-            os = new ObjectOutputStream(socket.getOutputStream());
-            sl = new Thread(new ServerListener(socket, output));
-            sl.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        serverListener = new ServerListener(ChatApplication.inputStream, output);
+        thread = new Thread(serverListener);
+        thread.start();
     }
 }

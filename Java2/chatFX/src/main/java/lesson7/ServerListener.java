@@ -4,22 +4,20 @@ import javafx.scene.control.TextArea;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.Socket;
 
 public class ServerListener implements Runnable{
 
     private final ObjectInputStream is;
+
     private boolean running;
     private TextArea output;
 
 
-    public ServerListener(Socket socket, TextArea output) throws IOException {
-        is = new ObjectInputStream(socket.getInputStream());
+    public ServerListener(ObjectInputStream is, TextArea output) {
+        this.is = is;
         running = true;
         this.output = output;
     }
-
-
 
     @Override
     public void run() {
@@ -27,7 +25,13 @@ public class ServerListener implements Runnable{
             try {
                 while(!Thread.interrupted()) {
                     Message message = (Message) is.readObject();
-                    output.appendText(message.getAuthor() + ": " + message.getMessage());
+                    switch (message.getCommand()[0]) {
+                        case "QUIT":
+                            running = false;
+                            break;
+                        case "MESSAGE":
+                            output.appendText(message.toString());
+                    }
                 }
                 is.close();
             } catch (IOException | ClassNotFoundException e) {
@@ -35,5 +39,9 @@ public class ServerListener implements Runnable{
                 break;
             }
         }
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }

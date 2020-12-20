@@ -13,8 +13,20 @@ public class RegistrationController {
     public TextField login;
     public TextField password;
 
-    public void enter(ActionEvent actionEvent) throws IOException {
-        MockAuthServiceImpl.getInstance().addUser(login.getText(), password.getText());
+    public void enter(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
+        Message answer;
+
+        String[] command = new String[3];
+        command[0] = "REG";
+        command[1] = login.getText();
+        command[2] = password.getText();
+
+        ChatApplication.outputStream.writeObject(Message.of("", "", command));
+        answer = (Message)ChatApplication.inputStream.readObject();
+
+        while (!answer.getCommand()[0].equals("REG")) {
+        }
+
         Parent chat = FXMLLoader.load(getClass().getResource("chat.fxml"));
         Stage stage = new Stage();
         stage.setTitle("Сетевой чат");

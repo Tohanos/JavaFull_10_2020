@@ -8,12 +8,14 @@ public class Message implements Serializable {
     private Date sendAt;
     private String author;
     private String message;
+    private String[] command;
 
-    public static Message of(String author, String message) {
+    public static Message of(String author, String message, String[] command) {
         Message m = new Message();
         m.setAuthor(author);
         m.setMessage(message);
         m.setSendAt(new Date());
+        m.setCommand(command);
         return m;
     }
 
@@ -40,16 +42,21 @@ public class Message implements Serializable {
         return message;
     }
 
+    public void setCommand(String[] command) {
+        this.command = command;
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }
 
+    public String[] getCommand() {
+        return command;
+    }
+
     @Override
     public String toString() {
-        return "Message{" +
-                "sendAt=" + sendAt +
-                ", author='" + author + '\'' +
-                ", message='" + message + '\'' +
-                '}';
+        return "[" + sendAt +
+                "](" + author + "):" + message;
     }
 }

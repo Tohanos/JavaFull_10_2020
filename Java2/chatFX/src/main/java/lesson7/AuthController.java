@@ -13,10 +13,19 @@ public class AuthController {
     public TextField login;
     public TextField password;
 
-    public void enter(ActionEvent actionEvent) throws IOException {
-        boolean auth = MockAuthServiceImpl.getInstance()
-                .auth(login.getText(), password.getText());
-        if (auth) {
+    public void enter(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
+
+        Message answer;
+
+        String[] command = new String[3];
+        command[0] = "AUTH";
+        command[1] = login.getText();
+        command[2] = password.getText();
+
+        ChatApplication.outputStream.writeObject(Message.of("", "", command));
+        answer = (Message)ChatApplication.inputStream.readObject();
+
+        if (answer.getCommand()[0].equals("OK")) {
             Parent chat = FXMLLoader.load(getClass().getResource("chat.fxml"));
             Stage stage = new Stage();
             stage.setTitle("Сетевой чат");
