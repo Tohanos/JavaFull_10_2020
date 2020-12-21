@@ -42,6 +42,7 @@ public class SerialHandler implements Closeable, Runnable {
 
     @Override
     public void run() {
+        DBAuthServiceImpl.getInstance().init();
         while (running) {
             try {
                 Message message = (Message) is.readObject();
@@ -53,27 +54,39 @@ public class SerialHandler implements Closeable, Runnable {
                 String[] answer = new String[1];
                 switch (message.getCommand()[0]) {
                     case "REG":
-                        MockAuthServiceImpl.getInstance().addUser(message.getCommand()[1],
-                                message.getCommand()[2]);
-                        answer[0] = "REG";
-                        sendMessage(Message.of("", "", answer));
-                        userName = message.getCommand()[1];
-                        answer[0] = "MESSAGE";
-                        server.roomCast(Message.of("server", "Пользователь " +
-                                userName + " вошёл в чат.\n", answer), currentRoom);
+                        switch (DBAuthServiceImpl.getInstance().addUser(message.getCommand()[1],
+                                message.getCommand()[2])) {
+                            case 0:
+                                answer[0] = "REG";
+                                userName = message.getCommand()[1];
+                                sendMessage(Message.of("", "", answer));
+                                answer[0] = "MESSAGE";
+                                server.roomCast(Message.of("server", "Пользователь " +
+                                        userName + " вошёл в чат.\n", answer), currentRoom);
+                                break;
+                            case 1:
+                                answer[0] = "EXISTS";
+                                sendMessage(Message.of("", "", answer));
+                                break;
+                            case -1:
+                                answer[0] = "DBFAULT";
+                                sendMessage(Message.of("", "", answer));
+                                break;
+                        }
                         break;
                     case "AUTH":
-                        if (MockAuthServiceImpl.getInstance().auth(message.getCommand()[1],
+                        if (DBAuthServiceImpl.getInstance().auth(message.getCommand()[1],
                                 message.getCommand()[2])) {
                             answer[0] = "OK";
+                            sendMessage(Message.of("", "", answer));
                             userName = message.getCommand()[1];
                             answer[0] = "MESSAGE";
                             server.roomCast(Message.of("server", "Пользователь " +
                                 userName + " вошёл в чат.\n", answer), currentRoom);
                         } else {
                             answer[0] = "DENIED";
+                            sendMessage(Message.of("", "", answer));
                         }
-                        sendMessage(Message.of("", "", answer));
                         break;
                     case "CHNAME":
                         String oldUserName = userName;
