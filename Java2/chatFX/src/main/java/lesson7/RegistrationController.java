@@ -23,8 +23,15 @@ public class RegistrationController {
 
         ChatApplication.outputStream.writeObject(Message.of("", "", command));
         answer = (Message)ChatApplication.inputStream.readObject();
-
-        while (!answer.getCommand()[0].equals("REG")) {
+        switch (answer.getCommand()[0]) {
+            case "EXISTS":
+                login.setText("Пользователь существует!");
+                return;
+            case "REG":
+                break;
+            case "DBFAULT":
+                login.setText("Нет подключения к базе пользователей");
+                return;
         }
 
         Parent chat = FXMLLoader.load(getClass().getResource("chat.fxml"));
