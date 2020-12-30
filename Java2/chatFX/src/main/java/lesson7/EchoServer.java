@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class EchoServer {
 
@@ -13,6 +15,7 @@ public class EchoServer {
     public EchoServer() {
         // web 8080
         running = true;
+        ExecutorService executor = Executors.newCachedThreadPool();
         try(ServerSocket server = new ServerSocket(8189)) {
             System.out.println("Server started!");
             while (running) {
@@ -21,9 +24,12 @@ public class EchoServer {
                 System.out.println("Client connected!");
                 SerialHandler handler = new SerialHandler(socket, this);
                 clients.add(handler);
-                new Thread(handler).start();
+
+                executor.execute(handler);
+                //new Thread(handler).start();
                 System.out.println("Client info: " + socket.getInetAddress());
             }
+            executor.shutdown();
         } catch (Exception e) {
             System.out.println("Server crashed");
         }
