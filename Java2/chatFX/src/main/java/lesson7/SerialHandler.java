@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class SerialHandler implements Closeable, Runnable {
 
@@ -117,6 +118,8 @@ public class SerialHandler implements Closeable, Runnable {
                         answer[0] = "QUIT";
                         running = false;
                         sendMessage(Message.of("", "", answer));
+                        server.kickMe(this);
+                        TimeUnit.MILLISECONDS.sleep(1000);
                         answer[0] = "MESSAGE";
                         server.roomCast(Message.of("server", "Пользователь " +
                                 userName + " покинул чат.\n", answer), currentRoom);
@@ -127,7 +130,7 @@ public class SerialHandler implements Closeable, Runnable {
                         server.roomCast(Message.of(userName, message.getMessage(), answer), currentRoom);
                         break;
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException | InterruptedException e) {
                 System.err.println("Exception while read");
                 break;
             }

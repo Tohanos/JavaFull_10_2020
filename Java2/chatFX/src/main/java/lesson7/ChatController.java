@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ChatController implements Initializable {
@@ -65,6 +66,12 @@ public class ChatController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         serverListener = new ServerListener(ChatApplication.inputStream, output);
+        List<String> messageList = new LocalHistoryService().getHistory(100);
+        if (messageList != null) {
+            for (int i = messageList.size(); i > 0; i--) {
+                output.appendText(messageList.get(i - 1));
+            }
+        }
         thread = new Thread(serverListener);
         thread.start();
     }

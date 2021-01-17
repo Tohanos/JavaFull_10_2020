@@ -31,6 +31,8 @@ public class ServerListener implements Runnable{
                             break;
                         case "MESSAGE":
                             output.appendText(message.toString());
+                            new LocalHistoryService().saveMessage(message.toString());
+                            break;
                     }
                 }
                 is.close();
