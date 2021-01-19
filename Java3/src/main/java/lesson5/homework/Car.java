@@ -9,12 +9,18 @@ public class Car implements Runnable {
     private int speed;
     private String name;
     private CyclicBarrier cb;
+    private volatile static Car winner = null;
+
     public String getName() {
+
         return name;
     }
+
     public int getSpeed() {
+
         return speed;
     }
+
     public Car(Race race, int speed, CyclicBarrier cb) {
         this.race = race;
         this.speed = speed;
@@ -22,6 +28,14 @@ public class Car implements Runnable {
         CARS_COUNT++;
         this.name = "Участник #" + CARS_COUNT;
     }
+
+    public void checkWin() {
+        if (winner == null) {
+            winner = this;
+            System.out.println("Победитель: " + this.name);
+        }
+    }
+
     @Override
     public void run() {
         try {
@@ -35,6 +49,7 @@ public class Car implements Runnable {
         for (int i = 0; i < race.getStages().size(); i++) {
             race.getStages().get(i).go(this);
         }
+        checkWin();
     }
 }
 
