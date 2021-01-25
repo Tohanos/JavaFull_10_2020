@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EchoServer {
 
@@ -13,19 +15,28 @@ public class EchoServer {
     public EchoServer() {
         // web 8080
         running = true;
+
+        private static final Logger LOG = LoggerFactory.getLogger(EchoServer.class);
+
         try(ServerSocket server = new ServerSocket(8189)) {
             System.out.println("Server started!");
             while (running) {
-                System.out.println("Server is waiting connection");
+                System.out.println("Server is waiting for connection");
+                LOG.info("Server is waiting for connection");
+
                 Socket socket = server.accept();
                 System.out.println("Client connected!");
+                LOG.info("Client connected!");
+
                 SerialHandler handler = new SerialHandler(socket, this);
                 clients.add(handler);
                 new Thread(handler).start();
                 System.out.println("Client info: " + socket.getInetAddress());
+                LOG.info("Client info: " + socket.getInetAddress());
             }
         } catch (Exception e) {
             System.out.println("Server crashed");
+            LOG.info("Server crashed");
         }
     }
 
