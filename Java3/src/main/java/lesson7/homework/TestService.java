@@ -39,7 +39,7 @@ public class TestService {
                     afterSuite = method;
                     continue;
                 } else {
-                    throw new RuntimeException("Too many beforeSuite methods!");
+                    throw new RuntimeException("Too many afterSuite methods!");
                 }
             }
             if (method.getAnnotation(Test.class) != null) {
