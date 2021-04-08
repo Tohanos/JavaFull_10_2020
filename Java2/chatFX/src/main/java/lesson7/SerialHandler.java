@@ -1,5 +1,6 @@
 package lesson7;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,7 @@ public class SerialHandler implements Closeable, Runnable {
     private final byte [] buffer;
     private final EchoServer server;
 
-
+    @Autowired
     public SerialHandler(Socket socket, EchoServer server) throws IOException {
         System.out.println("1");
         os = new ObjectOutputStream(socket.getOutputStream());

@@ -2,6 +2,8 @@ package lesson7;
 
 import com.sun.org.slf4j.internal.Logger;
 import com.sun.org.slf4j.internal.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,6 +18,11 @@ public class EchoServer {
     private ConcurrentLinkedDeque<SerialHandler> clients = new ConcurrentLinkedDeque<>();
 
     public EchoServer() {
+        go();
+
+    }
+
+    public void go() {
         // web 8080
         running = true;
 
@@ -70,7 +77,11 @@ public class EchoServer {
     }
 
     public static void main(String[] args) {
-        new EchoServer();
+
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        EchoServer echoServer = context.getBean("echoServer", EchoServer.class);
+        echoServer.go();
+//        new EchoServer();
     }
 
 }
