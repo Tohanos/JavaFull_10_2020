@@ -1,8 +1,13 @@
 package lesson7;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Component
+@Scope("prototype")
 public class Message implements Serializable {
 
     private Date sendAt;

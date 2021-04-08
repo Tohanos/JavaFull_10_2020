@@ -1,5 +1,8 @@
 package lesson7;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -8,6 +11,8 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+@Component
+@Scope("prototype")
 public class SerialHandler implements Closeable, Runnable {
 
     private static int cnt = 0;

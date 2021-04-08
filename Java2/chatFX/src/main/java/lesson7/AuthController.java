@@ -6,9 +6,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
+@PropertySource("classpath:application.properties")
 public class AuthController {
     public TextField login;
     public TextField password;

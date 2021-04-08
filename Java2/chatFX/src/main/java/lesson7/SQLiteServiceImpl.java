@@ -1,7 +1,10 @@
 package lesson7;
 
+import org.springframework.stereotype.Component;
+
 import java.sql.*;
 
+@Component
 public class SQLiteServiceImpl {
 
     private static SQLiteServiceImpl instance;

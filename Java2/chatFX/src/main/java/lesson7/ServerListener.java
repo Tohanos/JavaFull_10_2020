@@ -1,10 +1,15 @@
 package lesson7;
 
 import javafx.scene.control.TextArea;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+@Component
+@Scope("prototype")
 public class ServerListener implements Runnable{
 
     private final ObjectInputStream is;
@@ -12,7 +17,7 @@ public class ServerListener implements Runnable{
     private boolean running;
     private TextArea output;
 
-
+    @Autowired
     public ServerListener(ObjectInputStream is, TextArea output) {
         this.is = is;
         running = true;
