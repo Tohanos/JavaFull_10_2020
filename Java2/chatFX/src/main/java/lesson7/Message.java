@@ -1,5 +1,6 @@
 package lesson7;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ public class Message implements Serializable {
     private String message;
     private String[] command;
 
+    @Autowired
     public static Message of(String author, String message, String[] command) {
         Message m = new Message();
         m.setAuthor(author);

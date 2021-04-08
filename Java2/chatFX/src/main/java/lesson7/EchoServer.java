@@ -1,7 +1,5 @@
 package lesson7;
 
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
@@ -10,6 +8,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Component
 public class EchoServer {
@@ -19,34 +19,28 @@ public class EchoServer {
 
     public EchoServer() {
         go();
-
     }
 
     public void go() {
         // web 8080
         running = true;
-
-        final Logger LOG = LoggerFactory.getLogger(EchoServer.class);
-
+        ExecutorService executor = Executors.newCachedThreadPool();
         try(ServerSocket server = new ServerSocket(8189)) {
             System.out.println("Server started!");
             while (running) {
-                System.out.println("Server is waiting for connection");
-                LOG.debug("Server is waiting for connection");
-
+                System.out.println("Server is waiting connection");
                 Socket socket = server.accept();
                 System.out.println("Client connected!");
-                LOG.debug("Client connected!");
-
                 SerialHandler handler = new SerialHandler(socket, this);
                 clients.add(handler);
-                new Thread(handler).start();
+
+                executor.execute(handler);
+                //new Thread(handler).start();
                 System.out.println("Client info: " + socket.getInetAddress());
-                LOG.debug("Client info: " + socket.getInetAddress());
             }
+            executor.shutdown();
         } catch (Exception e) {
             System.out.println("Server crashed");
-            LOG.debug("Server crashed");
         }
     }
 
@@ -77,8 +71,7 @@ public class EchoServer {
     }
 
     public static void main(String[] args) {
-
-        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ServerConfig.class);
         EchoServer echoServer = context.getBean("echoServer", EchoServer.class);
         echoServer.go();
 //        new EchoServer();
