@@ -1,14 +1,14 @@
 package lesson7;
 
 
+import org.springframework.stereotype.Component;
+
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class LocalHistoryService implements HistoryService{
 
     private final String FILENAME = "history.txt";
